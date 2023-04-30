@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title> CARAT ZONE </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Gothic+A1&display=swap" rel="stylesheet">
+    <style type="text/css">
+    #t1,
+    div {
+        border: 1px solid black;
+    }
+
+    body {
+        background-color: black;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Bangers', 'Gothic A1', sans-serif;
+        color: white;
+    }
+
+    #t1 {
+        color: #F7CAC9;
+    }
+
+    #list {
+        color: #92A8D1;
+    }
+    </style>
+    <script>
+        let cnt = 1;
+    function a() {
+        let writer = f.writer.value;
+        let pwd = f.pwd.value;
+        let content = f.content.value;
+        let el = mkDiv(writer, pwd, content);
+        let list = document.getElementById("list");
+        list.appendChild(el);
+        f.writer.value = "";
+        f.pwd.value = "";
+        f.content.value = "";
+    }
+    function mkDiv(writer, pwd, content) {
+        let newDiv = document.createElement("div");//새 div태그 생성  <div id="d_1" pwd='111'>
+        newDiv.id = "d_" + cnt;//생성한 div에 id 지정. d_cnt
+        newDiv.pwd = pwd;
+        let html = ""; //생성된 div에 출력될 내용
+        html += "writer:<span id='w_"+cnt+"'>" + writer + "</span><br/>";
+        html += "content:<span id='c_"+cnt+"'>" + content + "</span><br/>";
+        html += "<input type='button' value='수정' onclick=editForm(" + cnt
+                + ")>"; //editForm(2)
+        html += "<input type='button' value='삭제' onclick=del(" + cnt + ")>";
+        newDiv.innerHTML = html;
+        cnt++;
+        return newDiv;
+    }
+    function editForm(cnt) {
+        let editDiv = document.getElementById("d_" + cnt); //수정할 글의 div
+        let editForm = document.getElementById("editf");
+        editDiv.appendChild(editForm);
+        let writer = document.getElementById("w_" + cnt).innerHTML;
+        let content = document.getElementById("c_" + cnt).innerHTML;
+        document.getElementById("editwriter").value = writer;
+        document.getElementById("editcontent").value = content;
+        document.getElementById("editbtn").cnt = cnt;//버튼에 cnt속성을 추가해서, 수정 글번호를 저장
+        editForm.style.display = '';
+    }
+    function cancel() {
+        let editForm = document.getElementById("editf");
+        editForm.style.display = 'none';
+        document.getElementsByTagName("body")[0].appendChild(editForm);
+
+    }
+    function edit() {
+        let cnt = document.getElementById("editbtn").cnt;
+        let editDiv = document.getElementById("d_" + cnt);
+        let pwd2 = document.getElementById("editpwd").value;//수정폼에 입력한 글 비밀번호
+        if (editDiv.pwd != pwd2) {
+            alert("글 비밀번호 불일치. 수정불가");
+        } else {
+            let newWriter = document.getElementById("editwriter").value;
+            let newContent = document.getElementById("editcontent").value;
+            document.getElementById("w_" + cnt).innerHTML = newWriter;
+            document.getElementById("c_" + cnt).innerHTML = newContent;
+        }
+        document.getElementById("editwriter").value = "";
+        document.getElementById("editcontent").value = "";
+        document.getElementById("editpwd").value = "";
+        cancel();
+    }
+    function del(cnt) {
+        let pwd = prompt("글 비밀번호");
+        let delDiv = document.getElementById("d_" + cnt);
+        if (pwd == delDiv.pwd) {
+            document.getElementById("list").removeChild(delDiv);
+        }else{
+            alert("글 비밀번호 불일치. 삭제취소");
+        }
+    }
+</script>
+</head>
+
+<body>
+    <h1>guest book</h1>
+    <h5>자유롭게 방명록을 적어주세요. 저장은 따로 되지 않을 거 같습니다...</h5>
+    <form name="f" method="post">
+        <table id="t1">
+            <tr>
+                <th>nickname</th>
+                <td><input type="text" name="writer" id="writer"></td>
+            </tr>
+            <tr>
+                <th>password</th>
+                <td><input type="password" name="pwd" id="pwd" maxlength="4" placeholder="****"></td>
+            </tr>
+            <tr>
+                <th>text</th>
+                <td><input type="text" name="content" id="content"></td>
+            </tr>
+            <tr>
+                <th>post</th>
+                <td><input type="button" value="click!" onclick="a()"></td>
+            </tr>
+        </table>
+    </form><br>
+    <div id="list"></div>
+    <!-- 수정폼 -->
+    <table id="editf" style="display: none;">
+        <tr>
+            <th>nickname</th>
+            <td><input type="text" name="editwriter" id="editwriter"></td>
+        </tr>
+        <tr>
+            <th>password</th>
+            <td><input type="password" name="editpwd" id="editpwd" maxlength="4" placeholder="****"></td>
+        </tr>
+        <tr>
+            <th>text</th>
+            <td><input type="text" name="editcontent" id="editcontent"></td>
+        </tr>
+        <tr>
+            <th>repost</th>
+            <td><input type="button" value="click" id="editbtn" onclick="edit()"> <input type="button" value="취소" onclick="cancel()"></td>
+        </tr>
+    </table>
+</body>
+
+</html>
